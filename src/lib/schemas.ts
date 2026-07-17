@@ -63,10 +63,10 @@ export const applicationSchema = z.object({
 
   // Section 7: Consentement
   consentData: z.literal(true, {
-    errorMap: () => ({ message: "Vous devez consentir au traitement de vos données" }),
+    message: "Vous devez consentir au traitement de vos données",
   }),
   certifyExact: z.literal(true, {
-    errorMap: () => ({ message: "Vous devez certifier l'exactitude de ces informations" }),
+    message: "Vous devez certifier l'exactitude de ces informations",
   }),
 })
 
