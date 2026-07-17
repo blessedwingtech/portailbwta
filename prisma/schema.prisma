@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Applicant {
+  id          String   @id @default(cuid())
+  
+  // Section 1: Statut
+  status      String   // etudiant, salarie, independant, sans_emploi, autre
+  
+  // Section 2: Infos personnelles
+  lastName    String
+  firstName   String
+  birthDate   DateTime
+  gender      String
+  nationality String
+  cinNif      String
+  phone       String
+  email       String
+  
+  // Adresse
+  department  String
+  commune     String
+  section     String
+  address     String
+  
+  photoUrl    String?
+  
+  // Section 3: Infos pro
+  profession  String?
+  employer    String?
+  expertise   String   // Stocké sous forme de JSON string ou séparé par virgules
+  experience  Int?
+  portfolio   String?
+  cvUrl       String?
+  
+  // Section 6: Motivation
+  roles       String   // Multi-sélection (JSON string ou CSV)
+  motivation  String
+  availability String  // h/semaine, présentiel/hybride
+  
+  // Meta
+  applicationStatus String @default("en_attente") // en_attente, retenu, refuse
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  educations   Education[]
+  achievements Achievement[]
+  references   Reference[]
+  notes        ApplicationNote[]
+}
+
+model Education {
+  id          String    @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  degree      String
+  institution String
+  year        String
+  field       String
+}
+
+model Achievement {
+  id          String    @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String
+  link        String?
+  year        String?
+}
+
+model Reference {
+  id          String    @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  name        String
+  contact     String
+  relation    String
+}
+
+model ApplicationNote {
+  id          String    @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  content     String
+  createdAt   DateTime  @default(now())
+}
