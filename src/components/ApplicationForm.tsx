@@ -18,7 +18,7 @@ export default function ApplicationForm() {
     watch,
     formState: { errors }
   } = useForm<ApplicationFormData>({
-    resolver: zodResolver(applicationSchema),
+    resolver: zodResolver(applicationSchema) as any,
     defaultValues: {
       status: 'etudiant',
       educations: [{ degree: '', institution: '', year: '', field: '' }],
