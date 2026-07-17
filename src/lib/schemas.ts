@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const applicationSchema = z.object({
   // Section 1: Statut
   status: z.enum(['etudiant', 'salarie', 'independant', 'sans_emploi', 'autre'], {
-    required_error: "Veuillez sélectionner un statut.",
+    errorMap: () => ({ message: "Veuillez sélectionner un statut." }),
   }),
 
   // Section 2: Infos personnelles
