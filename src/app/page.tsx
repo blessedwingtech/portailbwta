@@ -99,7 +99,7 @@ export default function Home() {
             <div className="md:w-1/3 flex flex-col items-center">
               <div className="w-full aspect-square rounded-2xl bg-brand-green-light/20 border-4 border-white shadow-xl overflow-hidden flex flex-col items-center justify-center relative mb-4">
                  <Building size={80} className="text-brand-green opacity-50" />
-                 <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-primary/20 bg-muted"> 
+                 <div className="relative h-40 w-40 overflow-hidden rounded-full border-2 border-primary/20 bg-muted"> 
                   <Image src={'/ba.png'} alt='Bentzky' fill className="object-cover" />
                   </div>
               </div>
@@ -109,16 +109,17 @@ export default function Home() {
             <div className="md:w-2/3 space-y-6">
               <h2 className="text-3xl font-bold text-brand-green">Le porteur du projet</h2>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Le projet est porté par <strong><a href="https://bentz.bittonik.com">Bentzky Louis</a></strong>, ingénieur en informatique (Licencié), développeur Full-Stack, administrateur système Linux et designer. Fort de plus de <strong>5 années d'expérience</strong>, il est le fondateur de 
+                Le projet est porté par <strong><a href="https://bentz.bittonik.com">Bentzky Louis</a></strong>, ingénieur en informatique (Licencié), développeur Full-Stack, administrateur système Linux, designer et formateur. Fort de plus de <strong>5 années d'expérience</strong>, il est le fondateur de 
                 <a href="https://bwt.bittonik.com" target="_blank" className="text-brand-turquoise hover:underline mx-1 font-semibold">Blessed Wing Technology (BWT)</a>, un écosystème qui met en production des solutions numériques diverses, notamment:
-                <ul className="space-y-3 text-gray-600">
-                  <li><a href="https://www.bittonik.com">BitTonik</a></li>
-                  <li><a href="https://shop.bittonik.com">ShopTonik</a></li>
-                  <li><a href="https://press.bittonik.com">PressTonik</a></li>
-                  <li><a href="https://memo.bittonik.com">MemoTonik</a></li>
-                  <li><a href="#">Etc.</a></li>
-                </ul> 
               </p>
+                <ul className="gap-3 flex space-y-3 text-gray-600">
+                  <li><a className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-green-light transition-colors" href="https://www.bittonik.com">BitTonik<ExternalLink size={20} /></a></li>
+                  <li><a className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-green-light transition-colors" href="https://shop.bittonik.com">ShopTonik<ExternalLink size={20} /></a></li>
+                  <li><a className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-green-light transition-colors" href="https://press.bittonik.com">PressTonik<ExternalLink size={20} /></a></li>
+                  <li><a className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-green-light transition-colors" href="https://memo.bittonik.com">MemoTonik<ExternalLink size={20} /></a></li>
+                  <li><a className="inline-flex items-center gap-1 text-brand-gold hover:text-brand-green-light transition-colors" href="#">Etc.</a></li>
+                </ul> 
+              
               
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-4">
                 <h4 className="font-bold text-gray-900">Un parcours d'excellence et d'impact :</h4>
