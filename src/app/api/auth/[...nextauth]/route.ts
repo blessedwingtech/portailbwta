@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email }
         })
 
-        if (!user) {
+        if (!user || !user.active) {
           return null
         }
 
@@ -35,10 +35,30 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-        }
+          name: user.name || user.email.split('@')[0],
+          role: user.role || 'ADMIN',
+        } as any
       }
     })
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = (user as any).id
+        token.role = (user as any).role
+        token.name = (user as any).name
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
+        (session.user as any).name = token.name;
+      }
+      return session
+    }
+  },
   pages: {
     signIn: '/admin/login',
   },

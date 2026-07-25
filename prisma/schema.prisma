@@ -13,8 +13,40 @@ datasource db {
 model AdminUser {
   id           String   @id @default(cuid())
   email        String   @unique
+  name         String?
+  role         String   @default("ADMIN") // Rôles: ADMIN, PRESIDENT, SECRETAIRE, TRESORIER
+  active       Boolean  @default(true)
   passwordHash String
   createdAt    DateTime @default(now())
+}
+
+model ArchiveDocument {
+  id               String   @id @default(cuid())
+  referenceCode    String   @unique // Cote physique ex: BWTA-2026-PV-0001
+  title            String
+  category         String   // proces_verbal, note, evenement, rapport_financier, contrat_partenariat, autre
+  richContent      String   // Contenu formaté HTML / Markdown
+  physicalLocation String?  // Emplacement physique dans le bureau (ex: Classeur 1, Armoire Secrétaire)
+  accessLevel      String   @default("bureau") // "prive" (auteur + admin), "bureau" (membres exécutifs), "public" (visible de tous)
+  authorId         String?
+  authorName       String
+  authorRole       String
+  fileUrl          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model EmailLog {
+  id             String   @id @default(cuid())
+  senderEmail    String
+  senderName     String?
+  recipientCount Int      @default(1)
+  recipients     String   // JSON array ou CSV
+  subject        String
+  body           String
+  status         String   @default("envoye") // envoye, echec
+  errorMessage   String?
+  createdAt      DateTime @default(now())
 }
 
 model Applicant {

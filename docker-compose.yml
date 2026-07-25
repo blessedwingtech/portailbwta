@@ -1,0 +1,26 @@
+# ==============================================================================
+# DOCKER COMPOSE - PORTAIL BWTA (PRODUCTION UBUNTU SERVER)
+# ==============================================================================
+
+services:
+  portailbwta:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bwta-portal-prod
+    restart: always
+    # IMPORTANT : En mode "host", le conteneur partage l'interface réseau du VPS Linux.
+    # 1) Permet la connexion instantanée à PostgreSQL sur localhost:5432 ou localhost:5433 du VPS.
+    # 2) Le port 3002 est exposé directement sur 127.0.0.1:3002, pile où Nginx effectue son proxy_pass !
+    # Plus aucune erreur 502 Bad Gateway.
+    network_mode: "host"
+    env_file:
+      - .env
+    environment:
+      - PORT=3002
+      - NODE_ENV=production
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

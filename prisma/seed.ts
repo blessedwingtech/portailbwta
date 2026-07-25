@@ -4,42 +4,75 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Vérification de l'environnement
-  if (process.env.NODE_ENV === 'production') {
-    console.log('❌ Ce script de seed ne peut pas être exécuté en production.');
-    process.exit(0);
-  }
-
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
-
-  if (!email || !password) {
-    console.error('❌ Les variables ADMIN_EMAIL et ADMIN_PASSWORD doivent être définies dans .env');
-    process.exit(1);
-  }
-
-  const existingAdmin = await prisma.adminUser.findUnique({
-    where: { email },
-  });
-
-  if (existingAdmin) {
-    console.log(`✅ Admin user "${email}" existe déjà.`);
-    return;
-  }
-
+  const defaultPassword = process.env.ADMIN_PASSWORD || '12345678';
   const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
+  const passwordHash = await bcrypt.hash(defaultPassword, saltRounds);
 
-  const admin = await prisma.adminUser.create({
-    data: { email, passwordHash },
-  });
+  const executiveAccounts = [
+    {
+      email: 'admin@bittonik.com',
+      name: 'Admin Système BWTA',
+      role: 'ADMIN',
+    },
+    {
+      email: 'admin@bwta.bittonik.com',
+      name: 'Admin Principal',
+      role: 'ADMIN',
+    },
+    {
+      email: 'president@bittonik.com',
+      name: 'Bentzky Louis (Président)',
+      role: 'PRESIDENT',
+    },
+    {
+      email: 'secretaire@bittonik.com',
+      name: 'Secrétariat Général BWTA',
+      role: 'SECRETAIRE',
+    },
+    {
+      email: 'tresorier@bittonik.com',
+      name: 'Trésorerie Centrale BWTA',
+      role: 'TRESORIER',
+    },
+  ];
 
-  console.log(`✅ Admin user créé : ${admin.email}`);
+  console.log('🔄 Initialisation / Vérification des comptes exécutifs de test BWTA...');
+
+  for (const acc of executiveAccounts) {
+    const existing = await prisma.adminUser.findUnique({
+      where: { email: acc.email },
+    });
+
+    if (existing) {
+      await prisma.adminUser.update({
+        where: { email: acc.email },
+        data: {
+          name: acc.name,
+          role: acc.role,
+          active: true,
+          passwordHash: passwordHash,
+        }
+      });
+      console.log(`✔ Compte existant mis à jour : ${acc.email} [Rôle: ${acc.role}]`);
+    } else {
+      await prisma.adminUser.create({
+        data: {
+          email: acc.email,
+          name: acc.name,
+          role: acc.role,
+          active: true,
+          passwordHash,
+        },
+      });
+      console.log(`✨ Nouveau compte créé : ${acc.email} [Rôle: ${acc.role}] (Mot de passe: ${defaultPassword})`);
+    }
+  }
 }
 
 main()
   .then(async () => {
     await prisma.$disconnect();
+    console.log('🎉 Seeding des comptes exécutifs terminé avec succès !');
   })
   .catch(async (e) => {
     console.error(e);
