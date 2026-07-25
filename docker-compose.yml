@@ -11,13 +11,13 @@ services:
     restart: always
     # IMPORTANT : En mode "host", le conteneur partage l'interface réseau du VPS Linux.
     # 1) Permet la connexion instantanée à PostgreSQL sur localhost:5432 ou localhost:5433 du VPS.
-    # 2) Le port 3002 est exposé directement sur 127.0.0.1:3002, pile où Nginx effectue son proxy_pass !
-    # Plus aucune erreur 502 Bad Gateway.
+    # 2) Le port 3004 est exposé directement sur 127.0.0.1:3004, pile où Nginx effectue son proxy_pass !
+    # Plus aucune collision de port avec news-platform (3002) ni d'erreur 502.
     network_mode: "host"
     env_file:
       - .env
     environment:
-      - PORT=3002
+      - PORT=3004
       - NODE_ENV=production
     logging:
       driver: "json-file"

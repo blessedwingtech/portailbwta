@@ -44,7 +44,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
-ENV PORT=3002
+ENV PORT=3004
 ENV HOSTNAME="0.0.0.0"
 
 # Copie exclusive des assets de production et des scripts de migration
@@ -54,8 +54,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 
-EXPOSE 3002
+EXPOSE 3004
 
 # Au démarrage : synchronise les tables Postgres (sans altérer les données existantes),
-# exécute le script de création du Président (seed) en toute sûreté, puis lance Next.js sur le port 3002.
-CMD ["sh", "-c", "npx prisma db push --skip-generate && npm run start -- --port 3002"]
+# exécute le script de création du Président (seed) en toute sûreté, puis lance Next.js sur le port 3004.
+CMD ["sh", "-c", "npx prisma db push --skip-generate && npm run start -- --port 3004"]
