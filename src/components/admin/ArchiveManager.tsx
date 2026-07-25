@@ -177,7 +177,7 @@ export default function ArchiveManager({ sessionUser }: { sessionUser: any }) {
           <div className="border-b-2 border-slate-900 pb-6 mb-6 flex justify-between items-start">
             <div>
               <h1 className="text-2xl font-extrabold uppercase tracking-wide font-sans text-emerald-950">Blessed Wing Tech Academy</h1>
-              <p className="text-sm font-sans font-semibold text-emerald-800">Structure Associative Haïtienne &bull; Lajeune, Pignon, Nord</p>
+              <p className="text-sm font-sans font-semibold text-emerald-800">Structure Associative Haïtienne &bull; (local Campus AEM) Lajeune, Département du Nord, Haïti</p>
               <p className="text-xs font-sans text-slate-500 mt-1">Initiative technologique sous l&apos;égide de Blessed Wing Technology (BWT)</p>
             </div>
             <div className="text-right border-2 border-slate-900 p-3 bg-slate-50 font-sans rounded">

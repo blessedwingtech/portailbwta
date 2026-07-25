@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../auth/[...nextauth]/route'
+import { logAudit } from '@/lib/audit'
 
 const prisma = new PrismaClient()
 
@@ -22,6 +23,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         where: { id },
         data: { applicationStatus: status }
       })
+
+      await logAudit({
+        adminEmail: session.user.email || 'Admin Inconnu',
+        adminName: (session.user as any).name || null,
+        action: 'CHANGEMENT_STATUT_CANDIDAT',
+        target: `${updated.firstName} ${updated.lastName} (#${id.slice(-6)})`,
+        details: `Passage au statut : ${status.toUpperCase()}`,
+        ipAddress: req.headers.get('x-forwarded-for') || 'Interne'
+      })
+
       return NextResponse.json({ success: true, applicant: updated })
     }
 
@@ -32,6 +43,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           applicantId: id
         }
       })
+
+      await logAudit({
+        adminEmail: session.user.email || 'Admin Inconnu',
+        adminName: (session.user as any).name || null,
+        action: 'AJOUT_NOTE_DOSSIER',
+        target: `Dossier #${id.slice(-6)}`,
+        details: `Note ajoutée (${note.length} caractères)`,
+        ipAddress: req.headers.get('x-forwarded-for') || 'Interne'
+      })
+
       return NextResponse.json({ success: true, note: newNote })
     }
 

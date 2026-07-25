@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { X, Printer, Mail, ExternalLink, User, Briefcase, MapPin, Phone, Calendar, Award, FileText, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
+import { X, Printer, Mail, ExternalLink, User, Briefcase, MapPin, Phone, Calendar, Award, FileText, CheckCircle2, AlertCircle, Clock, Download, GraduationCap, Trophy, Users } from 'lucide-react'
 
 export default function MemberDossierModal({ 
   applicant, 
@@ -89,7 +89,20 @@ export default function MemberDossierModal({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-center print:hidden">
+          <div className="flex items-center gap-2 self-end sm:self-center flex-wrap print:hidden">
+            {applicant.cvUrl && (
+              <a
+                href={applicant.cvUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-black text-sm transition-all shadow-md"
+                title="Télécharger le document CV (PDF/Doc) fourni"
+              >
+                <Download size={16} className="text-brand-gold" />
+                <span>Télécharger CV</span>
+              </a>
+            )}
             <button
               onClick={handlePrint}
               className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-900 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md"
@@ -229,6 +242,121 @@ export default function MemberDossierModal({
                 ))}
               </div>
             </div>
+
+            {/* Bloc CV Officiel Téléversé */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-emerald-500/10 text-brand-green border border-emerald-500/20 shadow-xs">
+                  <FileText size={24} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-extrabold text-slate-900">Curriculum Vitae (CV) &amp; Documents de Candidature</h4>
+                  <p className="text-xs text-slate-500">Document déposé par le candidat lors de sa postulation officielle sur le portail</p>
+                </div>
+              </div>
+              {applicant.cvUrl ? (
+                <a
+                  href={applicant.cvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="px-4 py-2.5 bg-brand-green hover:bg-emerald-600 text-white text-xs font-black rounded-xl inline-flex items-center justify-center gap-2 shadow-sm transition-all shrink-0"
+                >
+                  <Download size={15} className="text-brand-gold" />
+                  <span>Consulter / Télécharger CV</span>
+                </a>
+              ) : (
+                <span className="text-xs font-bold text-amber-700 bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200 shrink-0 text-center">
+                  ⚠️ Aucun CV fichier téléversé
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Section 2.5 : Cursus, Réalisations et Garanties */}
+          <div className="space-y-6">
+            
+            {/* Formations & Diplômes */}
+            {applicant.educations && applicant.educations.length > 0 && (
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-green flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <GraduationCap size={20} className="text-brand-gold" />
+                  <span>Formations &amp; Cursus Académiques ({applicant.educations.length})</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {applicant.educations.map((edu: any, index: number) => (
+                    <div key={index} className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-emerald-300 transition-all flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="font-extrabold text-slate-900 text-sm">{edu.degree || edu.diploma}</h4>
+                          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 shrink-0">
+                            {edu.year || `${edu.startYear || ''} - ${edu.endYear || ''}`}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-700 font-bold mt-1">{edu.institution || edu.school}</p>
+                      </div>
+                      {edu.field && <p className="text-[11px] text-slate-500 mt-2 font-medium italic">&bull; Spécialité / Domaine : {edu.field}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Réalisations & Projets passés */}
+            {applicant.achievements && applicant.achievements.length > 0 && (
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-green flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Trophy size={18} className="text-amber-500" />
+                  <span>Projets &amp; Réalisations Notable ({applicant.achievements.length})</span>
+                </h3>
+                <div className="space-y-3">
+                  {applicant.achievements.map((ach: any, index: number) => (
+                    <div key={index} className="p-4 rounded-xl bg-gradient-to-r from-slate-50 to-amber-50/20 border border-slate-200/80">
+                      <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <span className="text-amber-500 font-black">★</span> 
+                        <span>{ach.title || ach.project || "Projet / Réalisation"}</span>
+                      </h4>
+                      {ach.description && (
+                        <p className="text-xs text-slate-600 mt-2 leading-relaxed bg-white p-3 rounded-lg border border-slate-150 shadow-2xs font-normal">
+                          {ach.description}
+                        </p>
+                      )}
+                      {ach.url && (
+                        <a href={ach.url.startsWith('http') ? ach.url : `https://${ach.url}`} target="_blank" rel="noopener noreferrer" className="text-[11px] font-extrabold text-brand-turquoise hover:underline mt-2 inline-flex items-center gap-1.5">
+                          <ExternalLink size={12} /> <span>Voir la réalisation sur internet ({ach.url})</span>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Références Professionnelles */}
+            {applicant.references && applicant.references.length > 0 && (
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-green flex items-center gap-2 border-b border-slate-200 pb-3">
+                  <Users size={18} className="text-brand-gold" />
+                  <span>Références Professionnelles &amp; Garanties ({applicant.references.length})</span>
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {applicant.references.map((ref: any, index: number) => (
+                    <div key={index} className="p-4 rounded-xl bg-white border border-slate-200 text-xs space-y-2 shadow-2xs">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                        <strong className="text-slate-950 text-sm font-black">{ref.name || ref.fullName}</strong>
+                        {ref.relationship && <span className="text-[10px] bg-emerald-50 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded font-bold">{ref.relationship}</span>}
+                      </div>
+                      <p className="text-slate-700 font-bold">{ref.company || ref.organization || ref.title}</p>
+                      <div className="pt-1 flex flex-wrap gap-3 text-[11px] text-slate-600">
+                        {ref.phone && <a href={`tel:${ref.phone}`} className="font-bold text-slate-900 hover:text-brand-turquoise flex items-center gap-1">📞 {ref.phone}</a>}
+                        {ref.email && <a href={`mailto:${ref.email}`} className="font-bold text-brand-turquoise hover:underline flex items-center gap-1">✉️ {ref.email}</a>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* Section 3: Engagement au sein de BWTA & Motivation */}
@@ -291,7 +419,7 @@ export default function MemberDossierModal({
             <div className="flex justify-between items-center text-xs text-slate-600 mb-8 font-serif">
               <span>Cote Dossier Membre : BWTA-MBR-{applicant.id.slice(-6).toUpperCase()}</span>
               <span>Validé par le Conseil de Direction BWTA</span>
-              <span>Fait à Pignon, le {new Date().toLocaleDateString('fr-FR')}</span>
+              <span>Fait à Lajeune (local Campus AEM), le {new Date().toLocaleDateString('fr-FR')}</span>
             </div>
             <div className="grid grid-cols-2 gap-12 font-serif text-sm">
               <div className="border p-6 h-36 rounded-lg text-center flex flex-col justify-between">

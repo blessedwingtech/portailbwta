@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, Filter, Download, Users, FolderArchive, ShieldCheck, Mail, CheckSquare, Square, FileText, Send, Eye, MessageSquare, ChevronRight } from 'lucide-react'
+import { Search, Filter, Download, Users, FolderArchive, ShieldCheck, Mail, CheckSquare, Square, FileText, Send, Eye, MessageSquare, ChevronRight, Activity } from 'lucide-react'
 import ArchiveManager from './admin/ArchiveManager'
 import UserManager from './admin/UserManager'
 import EmailLogsView from './admin/EmailLogsView'
 import MemberDossierModal from './admin/MemberDossierModal'
 import EmailComposerModal from './admin/EmailComposerModal'
+import AnalyticsAndAudit from './admin/AnalyticsAndAudit'
 
 export default function AdminDashboard({ 
   initialApplicants = [], 
@@ -15,7 +16,7 @@ export default function AdminDashboard({
   initialApplicants: any[]
   sessionUser?: any 
 }) {
-  const [activeTab, setActiveTab] = useState<'members' | 'archives' | 'emails' | 'team'>('members')
+  const [activeTab, setActiveTab] = useState<'members' | 'archives' | 'emails' | 'team' | 'analytics'>('members')
   const [applicants, setApplicants] = useState(initialApplicants)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -175,6 +176,18 @@ export default function AdminDashboard({
             <span>Comptes Bureau &amp; Rôles</span>
           </button>
         )}
+
+        <button 
+          onClick={() => setActiveTab('analytics')}
+          className={`flex items-center gap-2.5 px-5 py-3 rounded-xl font-extrabold text-sm transition-all ${
+            activeTab === 'analytics' 
+              ? 'bg-brand-green text-white shadow-md' 
+              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+          }`}
+        >
+          <Activity size={18} className={activeTab === 'analytics' ? 'text-brand-gold' : 'text-slate-400'} />
+          <span>Trafic Visiteurs &amp; Audit</span>
+        </button>
       </div>
 
       {/* TAB 1: MEMBRES & CANDIDATURES */}
@@ -329,12 +342,23 @@ export default function AdminDashboard({
                         <div className="font-bold text-xs text-slate-800 line-clamp-1">
                           {app.profession || 'Sans profession spécialisée'} {app.experience ? `(${app.experience} ans)` : ''}
                         </div>
-                        <div className="flex flex-wrap gap-1 mt-1">
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                           {Array.isArray(roles) && roles.map((r: string) => (
                             <span key={r} className="inline-block bg-brand-green/10 text-brand-green font-extrabold px-2 py-0.5 rounded text-[11px]">
                               {r}
                             </span>
                           ))}
+                          {app.cvUrl && (
+                            <a 
+                              href={app.cvUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              title="Cliquez pour ouvrir/télécharger le CV du candidat"
+                              className="inline-flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black px-2 py-0.5 rounded text-[11px] transition-all shadow-2xs ml-1"
+                            >
+                              📄 CV
+                            </a>
+                          )}
                         </div>
                       </td>
 
@@ -395,6 +419,11 @@ export default function AdminDashboard({
       {/* TAB 4: COMPTES BUREAU */}
       {activeTab === 'team' && (
         <UserManager currentUserRole={sessionUser.role} />
+      )}
+
+      {/* TAB 5: AUDIENCE & AUDIT */}
+      {activeTab === 'analytics' && (
+        <AnalyticsAndAudit />
       )}
     </div>
   )

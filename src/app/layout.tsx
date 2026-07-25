@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import VisitorTracker from "@/components/VisitorTracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bwta.bittonik.com"),
@@ -7,12 +8,12 @@ export const metadata: Metadata = {
     default: "Portail BWTA | Blessed Wing Tech Academy - Innovation & Leadership",
     template: "%s | BWTA"
   },
-  description: "Portail associatif officiel de la Blessed Wing Tech Academy (BWTA) à Lajeune, Pignon (Nord, Haïti). Académie d'excellence technologique, développement communautaire et leadership d'avenir.",
-  keywords: ["BWTA", "Blessed Wing Tech Academy", "Académie Technologie", "Pignon", "Lajeune", "Nord Haïti", "Innovation", "Formation", "Communauté", "Tech"],
+  description: "Portail associatif officiel de la Blessed Wing Tech Academy (BWTA) située au (local Campus AEM) Lajeune, Département du Nord, Haïti. Académie d'excellence technologique, développement communautaire et leadership d'avenir.",
+  keywords: ["BWTA", "Blessed Wing Tech Academy", "Campus AEM", "Lajeune", "Département du Nord", "Haïti", "Académie Technologie", "Innovation", "Formation", "Communauté", "Tech"],
   authors: [{ name: "Bureau Exécutif BWTA", url: "https://bwta.bittonik.com" }],
   openGraph: {
     title: "Blessed Wing Tech Academy (BWTA) | Excellence & Innovation",
-    description: "Rejoignez l'académie de référence en technologie et innovation technologique. Formation d'élite, recherche et engagement communautaire d'avenir.",
+    description: "Rejoignez l'académie de référence située au (local Campus AEM) Lajeune, Département du Nord, Haïti. Formation d'élite, recherche et engagement communautaire.",
     url: "https://bwta.bittonik.com",
     siteName: "Portail BWTA",
     locale: "fr_HT",
@@ -50,6 +51,7 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col font-sans bg-slate-50 text-slate-900 selection:bg-brand-turquoise selection:text-white">
+        <VisitorTracker />
         {children}
       </body>
     </html>

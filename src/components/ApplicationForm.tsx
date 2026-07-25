@@ -10,6 +10,17 @@ export default function ApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [fileError, setFileError] = useState('')
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, label: string) => {
+    setFileError('')
+    const file = e.target.files?.[0]
+    if (file && file.size > 5 * 1024 * 1024) {
+      const sizeMo = (file.size / (1024 * 1024)).toFixed(2)
+      setFileError(`⚠️ Le fichier sélectionné pour [${label}] est trop lourd (${sizeMo} Mo). La limite maximale autorisée est de 5 Mo (5 MB).`)
+      e.target.value = '' // Réinitialiser l'input
+    }
+  }
 
   const {
     register,
@@ -198,7 +209,13 @@ export default function ApplicationForm() {
         <div className="pt-2">
           <div className="flex flex-col gap-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
              <label className="text-xs sm:text-sm font-semibold text-slate-800">Photo de profil / Identité <span className="text-slate-400 text-xs font-normal">(Optionnel, JPG/PNG, Max 5MB)</span></label>
-             <input type="file" id="photo-upload" accept="image/*" className="text-xs sm:text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-bold file:bg-emerald-100 file:text-brand-green hover:file:bg-emerald-200 cursor-pointer transition-colors" />
+              <input 
+                type="file" 
+                id="photo-upload" 
+                accept="image/*" 
+                onChange={(e) => handleFileChange(e, 'Photo de profil')}
+                className="text-xs sm:text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-bold file:bg-emerald-100 file:text-brand-green hover:file:bg-emerald-200 cursor-pointer transition-colors" 
+              />
           </div>
         </div>
       </section>
@@ -242,7 +259,13 @@ export default function ApplicationForm() {
         <div className="pt-2">
           <div className="flex flex-col gap-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
             <label className="text-xs sm:text-sm font-semibold text-slate-800">Curriculum Vitae / CV <span className="text-slate-400 text-xs font-normal">(PDF, DOCX recommandé, Max 5MB)</span></label>
-            <input type="file" id="cv-upload" accept=".pdf,.doc,.docx" className="text-xs sm:text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-bold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer transition-colors" />
+            <input 
+              type="file" 
+              id="cv-upload" 
+              accept=".pdf,.doc,.docx" 
+              onChange={(e) => handleFileChange(e, 'CV')}
+              className="text-xs sm:text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-bold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer transition-colors" 
+            />
           </div>
         </div>
       </section>
@@ -419,7 +442,12 @@ export default function ApplicationForm() {
         {errors.certifyExact && <p className="text-xs font-medium text-rose-500 ml-7">{errors.certifyExact.message}</p>}
       </section>
 
-      <div className="pt-6 flex flex-col sm:flex-row sm:justify-end border-t border-slate-100">
+      <div className="pt-6 flex flex-col sm:flex-row sm:justify-end border-t border-slate-100 items-center gap-4">
+        {fileError && (
+          <div className="flex-1 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs sm:text-sm font-semibold shadow-2xs">
+            {fileError}
+          </div>
+        )}
         <button 
           type="submit" 
           disabled={isSubmitting}

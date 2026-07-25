@@ -49,7 +49,7 @@ export default function AdminLogin() {
           <span>Retour au site principal BWTA</span>
         </Link>
         <span className="text-xs font-extrabold uppercase tracking-widest text-brand-gold bg-brand-gold/10 px-3 py-1 rounded-full border border-brand-gold/20 hidden sm:inline-block">
-          Portail Exécutif &bull; Pignon, Haïti
+          Portail Exécutif &bull; (local Campus AEM) Lajeune, Haïti
         </span>
       </div>
 

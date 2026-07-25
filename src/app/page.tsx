@@ -333,7 +333,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="space-y-1">
             <h4 className="text-xl font-bold text-white tracking-tight">Blessed Wing Tech Academy <small className="text-xs text-brand-turquoise uppercase ml-2 font-semibold">BWTA</small></h4>
-            <p className="text-sm text-slate-500">Lajeune, Pignon, Nord, Haïti &bull; Initiative associative sous l&apos;égide de BWT</p>
+            <p className="text-sm text-slate-400 font-medium">(local Campus AEM) Lajeune, Département du Nord, Haïti &bull; Initiative associative sous l&apos;égide de BWT</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs sm:text-sm font-medium pt-2">
             <a href="mailto:contact@bittonik.com" className="hover:text-brand-turquoise transition-colors">contact@bittonik.com</a>

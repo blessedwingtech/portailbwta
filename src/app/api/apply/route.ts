@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { applicationSchema } from '@/lib/schemas'
-import fs from 'fs'
-import path from 'path'
-import crypto from 'crypto'
+import { uploadFile } from '@/lib/storage'
 
 const prisma = new PrismaClient()
+
+// Limite maximale de fichier (5 Mo en octets)
+const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 // Basic Rate Limiting
 const rateLimitMap = new Map<string, { count: number, timestamp: number }>()
@@ -48,34 +49,34 @@ export async function POST(req: Request) {
 
     const data = validation.data
 
-    // File Uploads (Local for Dev, easy to swap out)
-    let cvUrl = null
-    let photoUrl = null
-
+    // 1. Validation de la taille maximale des fichiers (5 Mo)
     const cvFile = formData.get('cv') as File | null
     const photoFile = formData.get('photo') as File | null
 
-    const uploadDir = path.join(process.cwd(), 'public/uploads')
-    
-    // Ensure dir exists
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true })
+    if (cvFile && cvFile.size > MAX_FILE_SIZE) {
+      const sizeMo = (cvFile.size / (1024 * 1024)).toFixed(2)
+      return NextResponse.json({ 
+        error: `Le fichier CV dépasse la limite maximale de 5 Mo (taille actuelle : ${sizeMo} Mo). Veuillez compresser votre fichier.` 
+      }, { status: 400 })
     }
 
+    if (photoFile && photoFile.size > MAX_FILE_SIZE) {
+      const sizeMo = (photoFile.size / (1024 * 1024)).toFixed(2)
+      return NextResponse.json({ 
+        error: `La photo de profil dépasse la limite maximale de 5 Mo (taille actuelle : ${sizeMo} Mo). Veuillez choisir une photo plus légère.` 
+      }, { status: 400 })
+    }
+
+    // 2. Upload intelligent vers Cloudflare R2 (bucket bwta-datas) ou repli Volume Docker local
+    let cvUrl = null
+    let photoUrl = null
+
     if (cvFile && cvFile.size > 0) {
-      const buffer = Buffer.from(await cvFile.arrayBuffer())
-      const ext = path.extname(cvFile.name)
-      const fileName = `cv-${crypto.randomUUID()}${ext}`
-      fs.writeFileSync(path.join(uploadDir, fileName), buffer)
-      cvUrl = `/uploads/${fileName}`
+      cvUrl = await uploadFile(cvFile, 'cvs')
     }
 
     if (photoFile && photoFile.size > 0) {
-      const buffer = Buffer.from(await photoFile.arrayBuffer())
-      const ext = path.extname(photoFile.name)
-      const fileName = `photo-${crypto.randomUUID()}${ext}`
-      fs.writeFileSync(path.join(uploadDir, fileName), buffer)
-      photoUrl = `/uploads/${fileName}`
+      photoUrl = await uploadFile(photoFile, 'photos')
     }
 
     // Insert into DB

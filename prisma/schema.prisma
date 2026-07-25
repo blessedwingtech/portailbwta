@@ -137,3 +137,24 @@ model ApplicationNote {
   content     String
   createdAt   DateTime  @default(now())
 }
+
+model SiteVisit {
+  id        String   @id @default(cuid())
+  path      String   // Page visitée (ex: "/", "/rejoindre")
+  device    String   // "Mobile", "Bureau", ou "Tablette"
+  browser   String?  // Navigateur détecté (Chrome, Safari, Firefox...)
+  ipAddress String?  // Adresse IP ou hash pour unicité journalière
+  location  String?  // Pays ou Ville déduit (ex: Haïti, Diaspora...)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  adminEmail  String   // Email de l'administrateur
+  adminName   String?  // Nom ou rôle
+  action      String   // Type d'action: CONNEXION_ADMIN, CHANGEMENT_STATUT, CREATION_ARCHIVE...
+  target      String?  // Cible de l'action (ex: Candidat #id ou Document #ref)
+  details     String?  // Détail explicatif de l'action
+  ipAddress   String?  // IP d'origine de l'administrateur
+  createdAt   DateTime @default(now())
+}
