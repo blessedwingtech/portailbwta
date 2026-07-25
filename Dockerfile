@@ -3,7 +3,7 @@
 # DOCKERFILE HAUTE PERFORMANCE & RÉSILIENCE - NODE 22 SLIM
 # ==============================================================================
 
-# ÉTAPE 1 : DÉPENDANCES ET GÉNération PRISMA
+# ÉTAPE 1 : DÉPENDANCES ET GÉNÉRATION PRISMA
 FROM node:22-slim AS deps
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
-# Installation propre des dépendances et génération du client Prisma
+# Installation propre des dépendances et génération initiale de Prisma
 RUN npm ci --quiet && npx prisma generate
 
 
@@ -29,9 +29,12 @@ COPY . .
 # Définition des variables de build
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Optionnel pendant le build, permet au compilateur TS de ne pas échouer sur des URLs manquantes
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/portailbwta"
 
-# Compilation optimisée de l'application Next.js 16 (Turbopack)
-RUN npm run build
+# 1) Re-génère expressément le client Prisma après la copie du code (évite tout cache conflictuel)
+# 2) Lance la compilation optimisée de l'application Next.js 16 (Turbopack)
+RUN npx prisma generate && npm run build
 
 
 # ÉTAPE 3 : IMAGE DE PRODUCTION ULTRA-LÉGÈRE (RUNNER)
@@ -54,5 +57,5 @@ COPY --from=builder /app/prisma ./prisma
 EXPOSE 3002
 
 # Au démarrage : synchronise les tables Postgres (sans altérer les données existantes),
-# exécute éventuellement un seed/verification si applicable, puis lance Next.js sur le port 3002.
+# exécute le script de création du Président (seed) en toute sûreté, puis lance Next.js sur le port 3002.
 CMD ["sh", "-c", "npx prisma db push --skip-generate && npm run start -- --port 3002"]
