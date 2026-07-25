@@ -19,6 +19,11 @@ services:
     environment:
       - PORT=3004
       - NODE_ENV=production
+    # 3) Brique de persistance : lie directement les photos et CV téléchargés (public/uploads)
+    # au disque physique de votre VPS (/var/www/portailbwta/public/uploads).
+    # Garantie zéro perte de fichiers lors des mises à jour ou re-déploiements !
+    volumes:
+      - ./public/uploads:/app/public/uploads
     logging:
       driver: "json-file"
       options:

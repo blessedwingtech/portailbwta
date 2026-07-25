@@ -54,9 +54,15 @@ fi
 echo -e "${GREEN}✔ Dépôt local synchronisé à 100 % avec le serveur Github origin/main.${NC}\n"
 
 # ------------------------------------------------------------------------------
-# ÉTAPE 3 : VÉRIFICATION DU FICHIER .ENV (POSTGRESQL & NEXTAUTH)
+# ÉTAPE 3 : VÉRIFICATION DU FICHIER .ENV & PERSISTANCE DES UPLOADS (PHOTOS/CV)
 # ------------------------------------------------------------------------------
-echo -e "${BOLD}${YELLOW}[3/5] 🔐 Vérification de l'environnement de production (.env)...${NC}"
+echo -e "${BOLD}${YELLOW}[3/5] 🔐 Vérification de .env et persistance du dossier des photos de profil...${NC}"
+
+# Création et protection de l'espace de stockage sur le disque dur physique du serveur (pour volume Docker)
+mkdir -p public/uploads
+chmod 775 public/uploads 2>/dev/null || true
+echo -e "${GREEN}✔ Répertoire public/uploads configuré en persistance (Vos photos de profil et CV restent visibles à vie !).${NC}"
+
 if [ ! -f ".env" ]; then
     echo -e "${RED}❌ ERREUR CRITIQUE : Fichier .env manquant dans /var/www/portailbwta !${NC}"
     echo -e "${YELLOW}Veuillez vous assurer que .env existe et contient DATABASE_URL, NEXTAUTH_SECRET, etc.${NC}"
