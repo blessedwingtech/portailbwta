@@ -68,5 +68,5 @@ export async function uploadFile(
   const localPath = path.join(uploadDir, uniqueName)
   fs.writeFileSync(localPath, buffer)
 
-  return `/uploads/${folder}/${uniqueName}`
+  return `/api/files/${folder}/${uniqueName}`
 }
